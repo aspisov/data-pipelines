@@ -1,4 +1,4 @@
-# Homework 1
+# Hadoop deployment
 
 We are provided with 4 VM:
 - jn (JumpNode) (192.168.1.102)
