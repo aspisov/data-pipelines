@@ -1,12 +1,5 @@
 # Hadoop deployment
 
-We are provided with 4 VM:
-- jn (JumpNode) (192.168.1.102)
-- nn (NameNode, SecondaryNameNode, DataNode) (192.168.1.103)
-- dn-0 (DataNode) (192.168.1.104)
-- dn-1 (DataNode) (192.168.1.105)
-
-For each command, I specify the machine from which you should run it in brackets.
 
 ## VM setup
 
