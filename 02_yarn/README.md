@@ -6,7 +6,7 @@
 [Running Hadoop cluster](/01_hadoop/README.md)
 
 ## Scripts
-#### YARN & NGINX
+#### Setup YARN & NGINX
 1. Make scripts executable:
 ```shell
 # hadoop@tmpl-jn
@@ -22,7 +22,7 @@ chmod +x yarn_setup.sh nginx_setup.sh
 
 ## Instructions
 
-#### Deploying YARN
+#### Setup YARN
 1. Paste the content of [yarn-site.xml](./yarn-site.xml) and [mapred-site.xml](./mapred-site.xml) into the respective files.
 ```shell
 # hadoop@tmpl-jn
@@ -53,7 +53,7 @@ mapred --daemon start historyserver
 jps
 ```
 
-#### User interface (NGINX)
+#### Setup NGINX
 
 1. New nginx servers by copying the content of [nn](./nn), [ya](./ya) and [dh](./dh) files:
 ```shell
@@ -76,19 +76,20 @@ sudo apt-get install apache2-utils
 sudo htpasswd -c /etc/.htpasswd admin
 ```
 
-3. Now go back to your local machine and create a tunnel to the these services:
+#### Accessing the services
+
+1. Now go back to your local machine and create a tunnel to the these services:
 ```shell
 # local machine
 ssh -L 9870:127.0.0.1:9870 -L 8088:127.0.0.1:8088 -L 19888:127.0.0.1:19888 team@176.109.91.27
 ```
 
-4. Once the SSH tunnel is established, open your browser and navigate to:
+2. Once the SSH tunnel is established, open your browser and navigate to:
 
 > http://localhost:9870<br>
 > http://localhost:8088<br>
 > http://localhost:19888<br>
 
-Use the credentials from the previous step.
 
 
 
