@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import sys
 
 last_color, max_number = None, -1
