@@ -1,17 +1,14 @@
 import sys
-import re
-from collections import defaultdict
 
-result = defaultdict(int)
-errors = 0
+last_color, max_number = None, -1
 for line in sys.stdin:
-    year = line.strip().split("\t")[0]
-    if re.fullmatch(r"\d{4}", year) is None:
-        errors += 1
+    color, number = line.strip().split("\t")
+    if last_color == color:
+        max_number = max(max_number, int(number))
     else:
-        result[year] += 1
+        if last_color is not None:
+            print(f"{last_color}\t{max_number}")
+        last_color, max_number = color, int(number)
 
-for year, count in result.items():
-    print(f"{year}: {count}")
-
-print(f"Errors: {errors}")
+if last_color is not None:
+    print(f"{last_color}\t{max_number}")
