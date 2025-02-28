@@ -23,13 +23,50 @@ chmod +x yarn_setup.sh nginx_setup.sh
 ## Instructions
 
 #### Setup YARN
-1. Paste the content of [yarn-site.xml](./yarn-site.xml) and [mapred-site.xml](./mapred-site.xml) into the respective files.
-```shell
-# hadoop@tmpl-jn
-vim hadoop-3.4.0/etc/hadoop/yarn-site.xml 
-vim hadoop-3.4.0/etc/hadoop/mapred-site.xml
+Alternatively, you can run `yarn_setup.sh` to setup YARN.
+1. Paste the following into `hadoop-3.4.0/etc/hadoop/yarn-site.xml`:
+```xml
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HDFS_HOME,HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>tmpl-nn</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.address</name>
+        <value>tmpl-nn:8032</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>tmpl-nn:8031</value>
+    </property>
+</configuration>
+
 ```
-2. Now spread these configs to all the nodes.
+2. Paste the following into `hadoop-3.4.0/etc/hadoop/mapred-site.xml`:
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+</configuration>
+```
+3. Now spread these configs to all the nodes.
 ```shell
 # hadoop@tmpl-jn
 scp hadoop-3.4.0/etc/hadoop/yarn-site.xml tmpl-nn:hadoop-3.4.0/etc/hadoop/yarn-site.xml
@@ -40,7 +77,7 @@ scp hadoop-3.4.0/etc/hadoop/mapred-site.xml tmpl-nn:hadoop-3.4.0/etc/hadoop/mapr
 scp hadoop-3.4.0/etc/hadoop/mapred-site.xml tmpl-dn-00:hadoop-3.4.0/etc/hadoop/mapred-site.xml
 scp hadoop-3.4.0/etc/hadoop/mapred-site.xml tmpl-dn-01:hadoop-3.4.0/etc/hadoop/mapred-site.xml
 ```
-3. Now navigate to the namenode and start the YARN services and history server:
+4. Now navigate to the namenode and start the YARN services and history server:
 ```shell
 # hadoop@tmpl-nn
 hadoop-3.4.0/sbin/start-yarn.sh
@@ -54,13 +91,52 @@ jps
 ```
 
 #### Setup NGINX
-
-1. New nginx servers by copying the content of [nn](./nn), [ya](./ya) and [dh](./dh) files:
+Alternatively, you can run `nginx_setup.sh` to setup NGINX.
+1. Paste the following into `/etc/nginx/sites-available/nn`:
+```
+server {
+	listen 9870;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+	location / {
+		auth_basic "Administrator's Area";
+		auth_basic_user_file /etc/.htpasswd;
+        proxy_pass http://tmpl-nn:9870;
+	}
+}
+```
+Into `/etc/nginx/sites-available/ya`:
+```
+server {
+	listen 8088;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+	location / {
+		auth_basic "Administrator's Area";
+		auth_basic_user_file /etc/.htpasswd;
+        proxy_pass http://tmpl-nn:8088;
+	}
+}
+```
+Into `/etc/nginx/sites-available/dh`:
+```
+server {
+	listen 19888;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+	location / {
+		auth_basic "Administrator's Area";
+		auth_basic_user_file /etc/.htpasswd;
+        proxy_pass http://tmpl-nn:19888;
+	}
+}
+```
+2. Enable the new nginx servers and restart the service:
 ```shell
 # team@tmpl-jn
-sudo vim /etc/nginx/sites-available/nn
-sudo vim /etc/nginx/sites-available/ya
-sudo vim /etc/nginx/sites-available/dh
 sudo ln -s /etc/nginx/sites-available/nn /etc/nginx/sites-enabled/nn
 sudo ln -s /etc/nginx/sites-available/ya /etc/nginx/sites-enabled/ya
 sudo ln -s /etc/nginx/sites-available/dh /etc/nginx/sites-enabled/dh
@@ -68,7 +144,7 @@ sudo systemctl restart nginx
 sudo systemctl status nginx
 ```
 
-2. After that we need to create password for the these services. Run the following command and enter the password when prompted:
+3. After that we need to create password for the these services. Run the following command and enter the password when prompted:
 ```shell
 # team@tmpl-jn
 sudo apt-get update
