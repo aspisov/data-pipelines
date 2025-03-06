@@ -6,6 +6,21 @@
 [Running YARN](/02_yarn/README.md)
 
 ## Scripts
+#### Setup PostgreSQL, Hive, and initialize Hive
+1. Make scripts executable:
+```shell
+# team@tmpl-nn
+chmod +x setup_postgresql.sh install_hive.sh initialize_hive.sh
+```
+2. Run the scripts:
+```shell
+# team@tmpl-nn
+./setup_postgresql.sh
+./install_hive.sh
+./initialize_hive.sh
+```
+
+
 
 ## Instructions
 
