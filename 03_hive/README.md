@@ -182,14 +182,54 @@ hdfs dfs -chmod g+w /user/hive/warehouse
 apache-hive-4.0.0-alpha-2-bin/bin/schematool -initSchema -dbType postgres
 ```
 
-3. 
+3. Start Hive server
 ```sh
 # hadoop@tmpl-jn
 hive --hiveconf hive.server2.enable.doAs=false --hiveconf hive.security.authorization.enabled=false --service hiveserver2 1>> /tmp/hs2.log 2>> /tmp/hs2.log &
 ```
 
-4. Connect to Hive
+#### Load data to Hive
+
+1. Install data
+```sh 
+# hadoop@tmpl-jn
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1dIZucSSfCR8FyETYo-bUcUK-yzWvYsYK' -O job_dataset.csv
+```
+2. Load data to HDFS
+```sh
+# hadoop@tmpl-jn
+hdfs dfs -put job_dataset.csv /test
+```
+
+3. Connect to Hive
 ```sh
 # hadoop@tmpl-jn
 apache-hive-4.0.0-alpha-2-bin/bin/beeline -u jdbc:hive2://tmpl-jn:5433 -n scott -p tiger
 ```
+4. Create a test database
+```sql
+CREATE DATABASE test;
+USE test;
+```
+5. Create table
+```sql
+CREATE TABLE IF NOT EXISTS test.jobs (
+    `Job Title` STRING,
+    `Company` STRING,
+    `Location` STRING,
+    `Experience` STRING,
+    `Salary` DECIMAL(10, 2),
+    `Industry` STRING,
+    `Required Skills` STRING
+)
+COMMENT 'This dataset contains information about job postings, including job titles, company names, locations, required experience levels, salary ranges, industry categories, and required skills. The data can be used for job recommendation systems, trend analysis, and salary predictions.'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';
+```
+
+6. Load data to table
+```sql
+LOAD DATA INPATH '/test/job_dataset.csv' INTO TABLE test.jobs;
+```
+
+
