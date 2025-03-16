@@ -46,7 +46,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-5. 
+5. Install dependencies
 ```sh
 pip install pip -U
 pip install ipython
@@ -68,12 +68,24 @@ hdfs dfs -mkdir /input
 hdfs dfs -put top_spotify_songs.csv /input
 ```
 
-3. Enter an ipython shell
-```python
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
-from onetl.connection import SparkHDFS, Hive
+3. Run script
+```sh
+# hadoop@tmpl-jn
+python3 script.py
+```
 
+4. Connect to Hive
+```sh
+# hadoop@tmpl-jn
+apache-hive-4.0.0-alpha-2-bin/bin/beeline -u jdbc:hive2://tmpl-jn:5433 -n scott -p tiger
+```
 
+5. Check new tables in Hive
+```sql
+USE test;
+SHOW TABLES;
+SELECT * FROM spark_partitions LIMIT 5;
+SELECT * FROM one_partition LIMIT 5;
+SELECT * FROM partitions_by_year LIMIT 5;
+```
 
-1:33
