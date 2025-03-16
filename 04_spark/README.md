@@ -7,7 +7,39 @@
 
 ## Scripts
 
+This directory contains the following scripts:
 
+1. `setup_spark.sh` - Automates the Spark setup process
+2. `run_spark.sh` - Automates running the Spark job
+3. `script.py` - Spark script
+
+### Setup Spark
+To set up the Spark environment, simply run:
+```sh
+# hadoop@tmpl-jn
+chmod +x setup_spark.sh
+./setup_spark.sh
+```
+This script will:
+- Install required packages
+- Download and extract Spark
+- Set up environment variables
+- Create a Python virtual environment
+- Install dependencies
+
+### Run Spark
+To run the Spark job, execute:
+```sh
+# hadoop@tmpl-jn
+chmod +x run_spark.sh
+./run_spark.sh
+```
+This script will:
+- Download data if needed
+- Upload the data to HDFS
+- Start the Hive Metastore
+- Run the Spark script
+- Provide instructions for viewing results
 
 ## Instructions
 
@@ -68,19 +100,25 @@ hdfs dfs -mkdir /input
 hdfs dfs -put top_spotify_songs.csv /input
 ```
 
-3. Run script
+3. Start Hive Metastore
+```sh
+# hadoop@tmpl-jn
+$HIVE_HOME/bin/hive --service metastore &
+```
+
+4. Run script
 ```sh
 # hadoop@tmpl-jn
 python3 script.py
 ```
 
-4. Connect to Hive
+5. Connect to Hive
 ```sh
 # hadoop@tmpl-jn
 apache-hive-4.0.0-alpha-2-bin/bin/beeline -u jdbc:hive2://tmpl-jn:5433 -n scott -p tiger
 ```
 
-5. Check new tables in Hive
+6. Check new tables in Hive
 ```sql
 USE test;
 SHOW TABLES;
