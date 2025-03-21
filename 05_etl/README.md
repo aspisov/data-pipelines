@@ -8,7 +8,7 @@
 - [Spark with YARN](/04_spark/README.md)
 
 ## Scripts
-
+All the instruction below combined into one script: [run_etl.sh](run_etl.sh)
 
 ## Instructions
 
