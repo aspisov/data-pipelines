@@ -18,5 +18,6 @@ hadoop-3.4.0/sbin/start-dfs.sh
 
 1. [Deploying Hadoop cluster](/01_hadoop/README.md)
 2. [Deploying YARN](/02_yarn/README.md)
-3. [Running MapReduce](/2.5_mapreduce/README.md)
-4. [Deploying Hive](/03_hive/README.md)
+3. [Deploying Hive](/03_hive/README.md)
+4. [Spark with YARN](/04_spark/README.md)
+5. [ETL with Prefect](/05_etl/README.md)
